@@ -85,25 +85,38 @@
             return;
         }
 
-        // 분석 진행 중 UI 상태 표시 (옵션)
-        document.getElementById('keywordInput').value = "데이터 수집 중...";
-
+        const btn = document.querySelector('button');
+        btn.innerText = "실시간 AI 분석 중...";
+        btn.disabled = true;
+        document.getElementById('resultsArea').classList.add('hidden');
+        
         try {
-            // 새로 구축한 Vercel 서버리스 API 호출
             const response = await fetch(`/api/news?query=${encodeURIComponent(input)}`);
-            const rawData = await response.json();
+            const data = await response.json();
 
-            console.log("네이버 실시간 기사 수집 완료:", rawData);
+            if(data.error) throw new Error(data.error);
 
-            // TODO: 수집된 원시 뉴스 데이터를 LLM(Gemini)으로 전송하여 PR 분석 지표(A, B, C) 도출 필요
+            // 스니펫 영역 업데이트
+            document.getElementById('snippetTitle').innerText = data.snippetTitle;
+            document.getElementById('snippetDesc').innerText = data.snippetDesc;
 
-            // 임시 결과 영역 활성화
-            document.getElementById('keywordInput').value = input;
+            // 리스트 생성 헬퍼 함수
+            const createList = (items, color) => items.map(item => 
+                `<li class="flex items-start"><span class="mr-2 text-${color}-600 font-bold">▪</span> <div>${item}</div></li>`
+            ).join('');
+
+            // A, B, C 영역 업데이트
+            document.querySelector('#resultsArea .grid > div:nth-child(1) ul').innerHTML = createList(data.a_bullets, 'indigo');
+            document.querySelector('#resultsArea .grid > div:nth-child(2) ul').innerHTML = createList(data.b_bullets, 'emerald');
+            document.querySelector('#resultsArea .grid > div:nth-child(3) ul').innerHTML = createList(data.c_bullets, 'rose');
+
             document.getElementById('resultsArea').classList.remove('hidden');
 
         } catch (error) {
-            alert("데이터 연동 실패: " + error.message);
-            document.getElementById('keywordInput').value = input;
+            alert("분석 실패: " + error.message);
+        } finally {
+            btn.innerText = "분석 실행";
+            btn.disabled = false;
         }
     }
 </script>
