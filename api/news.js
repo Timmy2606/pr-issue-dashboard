@@ -23,7 +23,7 @@ module.exports = async function(req, res) {
         const prompt = `당신은 포스코이앤씨 소속 20년 차 대기업 PR 전문가입니다. 다음은 '${query}'에 대한 방금 보도된 실시간 뉴스 기사들입니다.\n\n${newsContext}\n\n이 실제 기사 데이터만을 바탕으로 다음 구조의 JSON 형태로만 응답하십시오. \n\n{ "snippetTitle": "이슈 핵심 정의 (10자 내외)", "snippetDesc": "현재 상황 핵심 요약 (3문장)", "a_bullets": ["핵심 요약 1", "핵심 요약 2", "주요 확산 추이"], "b_bullets": ["전체 매체 논조 (긍정/부정/중립 요약)", "주요 오피니언 동향", "포털 여론 예측"], "c_bullets": ["건설업계/포스코 그룹 파급도 예측", "유사 위기 대응 자산 활용 방안", "홍보팀 1차 대응 가이드라인 및 스피킹 포인트"] }`;
 
         // 3. Gemini 1.5 Flash API 호출
-        const geminiRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiApiKey}`, {
+        const geminiRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${geminiApiKey}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
