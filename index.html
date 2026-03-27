@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>이슈 분석 대시보드</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: 'Pretendard', -apple-system, sans-serif; background-color: #f8fafc; }
+        .fade-in { animation: fadeIn 0.4s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body class="p-8">
+
+<div class="max-w-7xl mx-auto">
+    <div class="bg-white p-6 rounded-xl shadow-sm mb-6 border border-gray-200 flex items-center justify-between">
+        <div>
+            <h1 class="text-2xl font-bold text-gray-900">AI 이슈 분석 대시보드</h1>
+            <p class="text-sm text-gray-500 mt-1">그룹 홍보 자산화(Data Asset) 연동 미디어 인텔리전스</p>
+        </div>
+        <div class="flex w-2/5">
+            <input type="text" id="keywordInput" placeholder="이슈 키워드 입력 (예: 노란봉투법)" class="w-full px-4 py-2 border border-gray-300 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent text-sm">
+            <button onclick="analyzeIssue()" class="bg-blue-800 text-white px-6 py-2 rounded-r-lg hover:bg-blue-900 transition font-semibold text-sm whitespace-nowrap">분석 실행</button>
+        </div>
+    </div>
+
+    <div id="resultsArea" class="hidden fade-in">
+        
+        <div class="bg-blue-50 border-l-4 border-blue-800 p-6 rounded-r-xl shadow-sm mb-6">
+            <div class="flex items-center mb-3">
+                <span class="bg-blue-100 text-blue-800 text-xs font-bold px-2.5 py-1 rounded border border-blue-200">AI 용어 요약</span>
+                <h2 class="text-xl font-bold ml-3 text-gray-900" id="snippetTitle">노란봉투법 (노동조합 및 노동관계조정법 개정안)</h2>
+            </div>
+            <p class="text-gray-700 leading-relaxed text-sm" id="snippetDesc">
+                하청 노동자에 대한 원청 기업의 책임을 강화하고, 노동쟁의(파업 등)의 범위를 '경영권 행사 일부'까지 확대하며, 파업 노동자에 대한 기업의 무분별한 손해배상 청구를 제한하는 것을 골자로 하는 법안입니다. 원청과의 직접 교섭 요구가 가능해짐에 따라 기업의 법적·노무 리스크 관리가 요구됩니다.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center border-b pb-2">
+                    <span class="w-6 h-6 rounded bg-indigo-100 text-indigo-700 flex items-center justify-center text-sm mr-2 font-bold">A</span>
+                    이슈 코어 대시보드
+                </h3>
+                <ul class="text-sm text-gray-600 space-y-3">
+                    <li class="flex items-start"><span class="mr-2 text-indigo-600 font-bold">▪</span> <div><strong>핵심 요약:</strong> 원청 대상 교섭 요구 증가 및 하청 노조 파업 리스크 확대.</div></li>
+                    <li class="flex items-start"><span class="mr-2 text-indigo-600 font-bold">▪</span> <div><strong>연관 검색어:</strong> 불법파업, 손해배상 면책, 하청업체 교섭권.</div></li>
+                    <li class="flex items-start"><span class="mr-2 text-indigo-600 font-bold">▪</span> <div><strong>확산 추이:</strong> 최근 1주일간 주요 매체 보도량 320% 급증 (경계 단계).</div></li>
+                </ul>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center border-b pb-2">
+                    <span class="w-6 h-6 rounded bg-emerald-100 text-emerald-700 flex items-center justify-center text-sm mr-2 font-bold">B</span>
+                    매체 논조 지형도
+                </h3>
+                <ul class="text-sm text-gray-600 space-y-3">
+                    <li class="flex items-start"><span class="mr-2 text-emerald-600 font-bold">▪</span> <div><strong>전체 논조:</strong> 중립~부정 (경제지 중심의 산업 위축 및 경영권 침해 우려 보도 65%).</div></li>
+                    <li class="flex items-start"><span class="mr-2 text-emerald-600 font-bold">▪</span> <div><strong>오피니언 동향:</strong> "노사 패러다임 전환" vs "투자 심리 위축" 프레임 대립.</div></li>
+                    <li class="flex items-start"><span class="mr-2 text-emerald-600 font-bold">▪</span> <div><strong>포털 여론:</strong> 불법행위 면책 조항에 대한 부정적 댓글 비율 우세 (부정 58%).</div></li>
+                </ul>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center border-b pb-2">
+                    <span class="w-6 h-6 rounded bg-rose-100 text-rose-700 flex items-center justify-center text-sm mr-2 font-bold">C</span>
+                    그룹 시사점 및 대응 가이드
+                </h3>
+                <ul class="text-sm text-gray-600 space-y-3">
+                    <li class="flex items-start"><span class="mr-2 text-rose-600 font-bold">▪</span> <div><strong>과거 자산 매칭:</strong> 과거 대규모 건설 노조 파업 당시 위기관리 매뉴얼 및 대응 논리 호출.</div></li>
+                    <li class="flex items-start"><span class="mr-2 text-rose-600 font-bold">▪</span> <div><strong>사업 파급도:</strong> 건설 현장 하청 근로자 파업 시 공기 지연 및 수주 영향 리스크 높음.</div></li>
+                    <li class="flex items-start"><span class="mr-2 text-rose-600 font-bold">▪</span> <div><strong>대응 논리:</strong> 헌법상 노조 활동은 존중하되, 현장 안전을 위협하는 불법 행위에 대한 원칙적 대응 스피킹 포인트 준비.</div></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    async function analyzeIssue() {
+        const input = document.getElementById('keywordInput').value;
+        if(input.trim() === "") {
+            alert("분석할 이슈 키워드를 입력하십시오.");
+            return;
+        }
+
+        // 분석 진행 중 UI 상태 표시 (옵션)
+        document.getElementById('keywordInput').value = "데이터 수집 중...";
+
+        try {
+            // 새로 구축한 Vercel 서버리스 API 호출
+            const response = await fetch(`/api/news?query=${encodeURIComponent(input)}`);
+            const rawData = await response.json();
+
+            console.log("네이버 실시간 기사 수집 완료:", rawData);
+
+            // TODO: 수집된 원시 뉴스 데이터를 LLM(Gemini)으로 전송하여 PR 분석 지표(A, B, C) 도출 필요
+
+            // 임시 결과 영역 활성화
+            document.getElementById('keywordInput').value = input;
+            document.getElementById('resultsArea').classList.remove('hidden');
+
+        } catch (error) {
+            alert("데이터 연동 실패: " + error.message);
+            document.getElementById('keywordInput').value = input;
+        }
+    }
+</script>
+
+</body>
+</html>
